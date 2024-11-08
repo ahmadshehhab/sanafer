@@ -1,0 +1,105 @@
+doctype html
+html(lang="en")
+  head
+    title Product Page
+    link(rel="stylesheet", href="/styles.css")
+  body
+    .container
+      .selectN اختر النمرة المناسبة
+      // Filter buttons
+      .filters
+        each size in ["2", "4", "6", "8", "10", "12", "14", "16", "18"]
+          button.filter-button(onclick=`window.location.href='/products/size/${size}'`)= size
+
+      // Product grid
+      .product-grid
+        each product in products
+          .product-card
+            img.product-image(src=product.image, alt=product.name)
+            .product-info
+              h3.product-name= product.name
+              p.product-price= product.price + ' ₪'
+              button.add-to-cart(onclick=`addToCart("${selectedSize} الحجم ", ${product.price}, "${product.image}")`) إضافة للسلة
+
+      // Cart section
+      .cart-section(id="cart-section")
+        h2 سلة التسوق
+        ul.cart-items
+          // Cart items will be dynamically added by JavaScript
+        p.total-price إجمالي: <span class="total-price">0</span> ₪
+        button.checkout(onclick="sendToWhatsApp()") اعتماد الطلب من خلال واتس اب
+
+    // Sample JavaScript data
+    script.
+      const products = [
+        { name: "ترينج بناتي Zara بيبي ميطون فرو - زهر", price: 28, image: "path/to/image1.jpg" },
+        { name: "ترينج بناتي Zara بيبي ميطون فرو - بنفسجي", price: 28, image: "path/to/image2.jpg" }
+      ];
+
+      // Cart-related JavaScript functions
+      let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+      function addToCart(name, price, image) {
+        const item = { name, price, image };
+        cartItems.push(item);
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        updateCartDisplay();
+        showCart();
+      }
+
+      function removeFromCart(index) {
+        cartItems.splice(index, 1);
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        updateCartDisplay();
+      }
+
+      function updateCartDisplay() {
+        const cartList = document.querySelector('.cart-items');
+        const totalPriceElem = document.querySelector('.total-price');
+        cartList.innerHTML = '';
+        
+        let totalPrice = 0;
+        
+        cartItems.forEach((item, index) => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('cart-item');
+          listItem.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="cart-item-image" />
+            <p>${item.name}</p>
+            <p>${item.price} ₪</p>
+            <button onclick="removeFromCart(${index})">حذف</button>
+          `;
+          cartList.appendChild(listItem);
+          totalPrice += item.price;
+        });
+
+        totalPriceElem.textContent = totalPrice;
+      }
+
+      function showCart() {
+        const cartSection = document.getElementById('cart-section');
+        cartSection.classList.add('active');
+      }
+
+      // Send cart info to WhatsApp
+      function sendToWhatsApp() {
+        let cartMessage = "تفاصيل السلة:\n";
+        let totalPrice = 0;
+
+        cartItems.forEach(item => {
+          cartMessage += `${item.name} - ${item.price} ₪\n`;
+          cartMessage += `صورة المنتج: ${item.image}\n`;  // Append image URL
+          totalPrice += item.price;
+        });
+
+        cartMessage += `\nإجمالي: ${totalPrice} ₪`;
+        
+        // WhatsApp URL with cart message
+        const whatsappUrl = `https://wa.me/+970592753581/?text=${encodeURIComponent(cartMessage)}`;
+        
+        // Redirect to WhatsApp
+        window.location.href = whatsappUrl;
+      }
+
+      // Initial update of cart display
+      updateCartDisplay();
