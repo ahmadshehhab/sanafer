@@ -19,7 +19,7 @@ async function scrapeData(size) {
         "--no-sandbox",
         "--no-zygote"
       ],
-      executablePath: process.env.PUPPETER_EXECUTABLE_PATH
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH
     });
     const page = await browser.newPage();
 
