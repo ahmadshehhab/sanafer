@@ -76,6 +76,6 @@ app.get('/products/size/:size', async (req, res) => {
    console.log(await scrapeData())
 });
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
