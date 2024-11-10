@@ -13,7 +13,14 @@ const url = 'https://alsanafer.ps/?app=product.cat.59&size=';
 async function scrapeData(size) {
   try {
     // Launch a new headless browser
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args:[
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--no-zygote"
+      ],
+      executablePath: process.env.PUPPETER_EXECUTABLE_PATH
+    });
     const page = await browser.newPage();
 
     // Navigate to the page
