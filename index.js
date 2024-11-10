@@ -14,12 +14,8 @@ async function scrapeData(size) {
   try {
     // Launch a new headless browser
     const browser = await puppeteer.launch({
-      args:[
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-        "--no-zygote"
-      ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH
+      headless:true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
 
